@@ -2,9 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>PyVe</title>
+    <title>Cartelera de Empleos - PyVe</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
     <!-- endbower -->
@@ -20,13 +21,25 @@
 
 
     <div id="jobs_on_fire" class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li><a href="#" id="add_job">Añadir Oferta</a></li>
-          <li><a target="_blank" href="https://pyve.github.io/">Python Venezuela</a></li>
-        </ul>
-        <h3 class="text-muted">Cartelera de Empleos</h3>
-      </div>
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_extra">
+              <span class="sr-only">Mostrar menú</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://pyve.github.io">
+              <img src="images/logo.png" height="100%" alt="Logo de Python Venezuela" />
+              Python Venezuela
+            </a>
+          </div>
+          <div id="navbar_extra" class="collapse navbar-collapse">
+            <button class="btn navbar-btn navbar-right btn-info" id="add_job">Añadir Oferta</button>
+          </div>
+        </div>
+      </nav>
 
       <!-- Login or Register Modal -->
       <div class="modal fade" id="login_or_register_modal" tabindex="-1" role="dialog" aria-labelledby="login_or_register_modal_label" aria-hidden="true">
@@ -77,12 +90,15 @@
       </div>
 
       <div id="jobs">
+        <div class="page-header">
+          <h1>Cartelera de Empleos</h1>
+        </div>
         <ul class="jobs-list">
         </ul>
       </div>
 
       <div class="footer">
-        <p class="logout pull-right <% if (!window.firebase.getAuthData()) {%> hide <% }%>">
+        <p class="logout pull-right hide">
           <a id="logout_link" href="#">Salir</a>
         </p>
         <p>Una iniciativa de Python Venezuela</p>
@@ -91,7 +107,10 @@
     </div>
 
     <script id="job_template" type="text/template">
-      <article id="job_<%= id %>" class="job-wrapper">
+      <article id="job_<%= id %>" data-id="<%= id %>" class="job-wrapper">
+        <% if (userId == firebase.getAuth().uid) { %>
+        <a class="job-delete text-danger pull-right" href="#"><small>Eliminar</small></a>
+        <% } %>
         <header>
           <h2><%= title %></h2>
         </header>
@@ -129,6 +148,7 @@
             <% if (posted !== updated) { %>
             Actualizado: <time datetime="<%= new Date(updated).toISOString() %>" updated><%= _.isFunction(Date.toLocaleString) ? new Date(updated).toLocaleString() : new Date(updated).toString() %></time>.
             <% } %>
+            Expira: <time datetime="<%= new Date(expires).toISOString() %>"><%= _.isFunction(new Date().toLocaleDateString) ? new Date(expires).toLocaleDateString() : new Date(expires).toDateString() %></time>.
           </p>
         </footer>
       </article>
@@ -136,8 +156,7 @@
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js"></script>
-    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
     <script src="bower_components/firebase/firebase.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
     <script src="bower_components/backbone/backbone.js"></script>

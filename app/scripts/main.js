@@ -140,18 +140,30 @@ $(function() {
 
   var Jobs = Backbone.Firebase.Collection.extend({
     model: Job,
-    firebase: firebase.child('jobs')
+    firebase: firebase.child('jobs'),
+    active: function() {
+      return this.filter(function(job) {
+        return new Date(job.expires) > new Date();
+      });
+    }
   });
 
   var JobView = Backbone.View.extend({
     tagName: 'li',
     template: _.template($('#job_template').text()),
+    events: {
+      'click .job-delete': 'remove'
+    },
     initialize: function() {
       this.listenTo(this.model, 'change', this.render);
     },
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
       return this;
+    },
+    remove: function(evt) {
+      evt.preventDefault();
+      jobs.remove(this.model);
     }
   });
 
