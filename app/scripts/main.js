@@ -15,39 +15,16 @@ $(function() {
   });
 
   /* Backbone forms customization */
-
   Backbone.Form.template = _.template('<form class="form-horizontal" role="form" data-fieldsets></form>');
-
-
   Backbone.Form.Fieldset.template = _.template('<fieldset data-fields><% if (legend) { %><legend><%= legend %></legend><% } %></fieldset>');
-
-
   Backbone.Form.Field.template = _.template('<div class="form-group field-<%= key %>"><label class="col-sm-2 control-label" for="<%= editorId %>"><%= title %></label><div class="col-sm-10"><span data-editor></span><p class="help-block" data-error></p><p class="help-block"><%= help %></p></div></div>');
-
-
   Backbone.Form.NestedField.template = _.template('<div class="field-<%= key %>"><div title="<%= title %>" class="input-xlarge"><span data-editor></span><div class="help-inline" data-error></div></div><div class="help-block"><%= help %></div></div>');
-
   Backbone.Form.editors.Base.prototype.className = 'form-control';
   Backbone.Form.editors.Radio.prototype.className = 'radio';
   Backbone.Form.editors.Checkbox.prototype.className = 'checkbox';
   Backbone.Form.Field.errorClassName = 'has-error';
-
-
-  if (Backbone.Form.editors.List) {
-
-    Backbone.Form.editors.List.template = _.template('<div class="bbf-list"><ul class="unstyled clearfix" data-items></ul><button type="button" class="btn bbf-add" data-action="add">Add</button></div>');
-
-
-    Backbone.Form.editors.List.Item.template = _.template('<li class="clearfix"><div class="pull-left" data-editor></div><button type="button" class="btn bbf-del" data-action="remove">&times;</button></li>');
-
-
-    Backbone.Form.editors.List.Object.template = Backbone.Form.editors.List.NestedModel.template = _.template('<div class="bbf-list-modal"><%= summary %></div>');
-
-  }
-
   Backbone.Form.validators.errMessages.required = 'Obligatorio';
   Backbone.Form.validators.errMessages.email = 'Debe indicar un correo electrónico válido';
-
   /* End of Backbone Forms customization */
 
   var JobSchema = {
