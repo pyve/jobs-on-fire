@@ -3,8 +3,11 @@
 'use strict';
 
 $(function() {
+  var jobs;
 
-  var firebase = window.firebase = new Firebase('https://jobs-on-fire.firebaseio.com/');
+  var DATABASE = 'jobs-on-fire';
+
+  var firebase = window.firebase = new Firebase('https://' + DATABASE + '.firebaseio.com/');
 
   firebase.onAuth(function(authData) {
     if (authData) {
@@ -226,12 +229,13 @@ $(function() {
       this.$('.add-job-form').html(this.form.render().el);
     },
     addJob: function() {
-      var jobData;
+      var jobData, newJob;
       if (!this.form.validate()) {
         jobData = this.form.getValue();
-        this.jobs.create(_.extend(jobData, {
+        newJob = _.extend(jobData, {
           userId: this.jobs.firebase.getAuth().uid
-        }));
+        });
+        this.jobs.add(newJob);
         $('#add_job_modal').modal('hide');
       }
     }
@@ -276,6 +280,6 @@ $(function() {
     }
   });
 
-  var jobs = new Jobs();
+  jobs = new Jobs();
   new JobsView({jobs: jobs});
 });
