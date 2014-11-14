@@ -108,7 +108,7 @@
 
     <script id="job_template" type="text/template">
       <article id="job_<%= id %>" data-id="<%= id %>" class="job-wrapper">
-        <% if (userId == firebase.getAuth().uid) { %>
+        <% if (firebase.getAuth() && userId == firebase.getAuth().uid) { %>
         <a class="job-delete text-danger pull-right" href="#"><small>Eliminar</small></a>
         <% } %>
         <header>
@@ -142,15 +142,23 @@
             <%= description %>
           </p>
         </section>
+        <% if (this.model.get('posted') || this.model.get('updated') || this.model.get('expires')) { %>
         <footer class="job-timestamps text-muted">
           <p>
+            <% if (this.model.get('posted')) { %>
             Publicado: <time datetime="<%= new Date(posted).toISOString() %>" published><%= _.isFunction(Date.toLocaleString) ? new Date(posted).toLocaleString() : new Date(posted).toString() %></time>.
-            <% if (posted !== updated) { %>
+            <% } %>
+            <% if (this.model.get('posted')) { %>
+            <% if (posted !== this.model.get('updated')) { %>
             Actualizado: <time datetime="<%= new Date(updated).toISOString() %>" updated><%= _.isFunction(Date.toLocaleString) ? new Date(updated).toLocaleString() : new Date(updated).toString() %></time>.
             <% } %>
+            <% } %>
+            <% if (this.model.get('expires')) { %>
             Expira: <time datetime="<%= new Date(expires).toISOString() %>"><%= _.isFunction(new Date().toLocaleDateString) ? new Date(expires).toLocaleDateString() : new Date(expires).toDateString() %></time>.
+            <% } %>
           </p>
         </footer>
+        <% } %>
       </article>
     </script>
     <!-- build:js(.) scripts/vendor.js -->

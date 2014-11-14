@@ -17,6 +17,20 @@ $(function() {
     }
   });
 
+  var escapeObj = function(obj) {
+    return _.reduce(_.map(obj, function(value, key) {
+      var ret = {};
+      if (_.isString(value)) {
+        ret[key] = _.escape(value);
+      } else {
+        ret[key] = value;
+      }
+      return ret;
+    }), function(memo, item) {
+      return _.extend(memo, item);
+    }, {});
+  };
+
   /* Backbone forms customization */
   Backbone.Form.template = _.template('<form class="form-horizontal" role="form" data-fieldsets></form>');
   Backbone.Form.Fieldset.template = _.template('<fieldset data-fields><% if (legend) { %><legend><%= legend %></legend><% } %></fieldset>');
@@ -129,17 +143,7 @@ $(function() {
     }
   };
 
-  var JobDefaults = {
-    posted: Date.now().valueOf(),
-    updated: Date.now().valueOf(),
-    expires: Date.now().valueOf() + 1296015000, // now plus 15 days and 1 sec
-    remote: false,
-    workingTime: 'A convenir'
-  };
-
-  var Job = Backbone.Model.extend({
-    defaults: JobDefaults
-  });
+  var Job = Backbone.Model.extend({});
 
   var Jobs = Backbone.Firebase.Collection.extend({
     model: Job,
@@ -161,7 +165,8 @@ $(function() {
       this.listenTo(this.model, 'change', this.render);
     },
     render: function() {
-      this.$el.html(this.template(this.model.toJSON()));
+      var job = escapeObj(this.model.toJSON());
+      this.$el.html(this.template(job));
       return this;
     },
     remove: function(evt) {
@@ -224,16 +229,26 @@ $(function() {
     render: function() {
       this.form = new Backbone.Form({
         schema: JobSchema,
-        data: JobDefaults
+        data: {
+          expires: Date.now().valueOf() + 1296015000, // now plus 15 days and 1 sec
+          remote: false,
+          workingTime: 'A convenir'
+        }
       });
       this.$('.add-job-form').html(this.form.render().el);
     },
     addJob: function() {
-      var jobData, newJob;
-      if (!this.form.validate()) {
-        jobData = this.form.getValue();
-        newJob = _.extend(jobData, {
-          userId: this.jobs.firebase.getAuth().uid
+      var jobData, newJob, user, now;
+      if (!this.form.validate()) { // This means it's valid, meh.
+        jobData = escapeObj(this.form.getValue());
+        user = this.jobs.firebase.getAuth();
+        now = Date.now().valueOf();
+        jobData.expires = jobData.expires.valueOf();
+        newJob = _.defaults(jobData, {
+          userId: user ? user.uid : '',
+          posted: now,
+          updated: now,
+          expires: now + 1296015000
         });
         this.jobs.add(newJob);
         $('#add_job_modal').modal('hide');
