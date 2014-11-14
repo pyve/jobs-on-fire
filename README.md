@@ -38,6 +38,7 @@ Then, assuming you have a clone of the [PyVe's site sources](https://github.com/
 
 ## TODO ##
 
+* Markdown with editor for description
 * Filters
 * Pagination
 * Share to social channels
