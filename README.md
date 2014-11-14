@@ -24,7 +24,7 @@ You'll need access to the application in Firebase and the `firebase-tools`.
 
 **IMPORTANT**
 
-To deploy to production first change the `DATABASE` variable in the `app/scripts/main.js` to `empleos-pyve`.
+To deploy to production first change the `DATABASE` variable in the `app/scripts/main.js` to `empleos-pyve`. If you don't do this, the job postings from the production database will not show up and the staging database contents will show up instead.
 
 Then, assuming you have a clone of the [PyVe's site sources](https://github.com/pyve/pyve.github.com/) in the parent dir:
 
