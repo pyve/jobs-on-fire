@@ -42,6 +42,7 @@ $(function() {
   Backbone.Form.Field.errorClassName = 'has-error';
   Backbone.Form.validators.errMessages.required = 'Obligatorio';
   Backbone.Form.validators.errMessages.email = 'Debe indicar un correo electrónico válido';
+  Backbone.Form.validators.errMessages.url = 'El enlace debe ser una URL válida';
   /* End of Backbone Forms customization */
 
   var JobSchema = {
@@ -129,6 +130,7 @@ $(function() {
       type: 'Text',
       dataType: 'url',
       validators: [
+        'url',
         function(value, formValues) {
           if (!value && !formValues.email) {
             return {
@@ -171,6 +173,8 @@ $(function() {
     },
     remove: function(evt) {
       evt.preventDefault();
+      // TODO: we should soft delete here, setting deletedBy to the current user id
+      // for moderation and auditing
       jobs.remove(this.model);
     }
   });
