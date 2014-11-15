@@ -39,6 +39,7 @@ $(function() {
   Backbone.Form.editors.Base.prototype.className = 'form-control';
   Backbone.Form.editors.Radio.prototype.className = 'radio';
   Backbone.Form.editors.Checkbox.prototype.className = 'checkbox';
+  Backbone.Form.editors.Date.monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
   Backbone.Form.Field.errorClassName = 'has-error';
   Backbone.Form.validators.errMessages.required = 'Obligatorio';
   Backbone.Form.validators.errMessages.email = 'Debe indicar un correo electrónico válido';
@@ -54,7 +55,18 @@ $(function() {
     expires: {
       title: 'Fecha de Expiración',
       type: 'Date',
-      validators: ['required']
+      yearStart: new Date().getFullYear(),
+      yearEnd: new Date().getFullYear() + 1,
+      validators: ['required', function(value) {
+        if (new Date(value).valueOf() < Date.now()) {
+          return {
+            type: 'expires',
+            message: 'La fecha de expiración debe estar en el futuro'
+          };
+        } else {
+          return null;
+        }
+      }]
     },
     location: {
       title: 'Ubicación',
