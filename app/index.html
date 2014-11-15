@@ -107,7 +107,7 @@
     </div>
 
     <script id="job_template" type="text/template">
-      <article id="job_<%= id %>" data-id="<%= id %>" class="job-wrapper">
+      <article id="job_<%= id %>" data-id="<%= id %>" class="job-wrapper<% if (this.model.expired()) { %> job-expired text-muted<% } %>">
         <% if (firebase.getAuth() && userId == firebase.getAuth().uid) { %>
         <a class="job-delete text-danger pull-right" href="#"><small>Eliminar</small></a>
         <% } %>
@@ -146,15 +146,13 @@
         <footer class="job-timestamps text-muted">
           <p>
             <% if (this.model.get('posted')) { %>
-            Publicado: <time datetime="<%= new Date(posted).toISOString() %>" published><%= _.isFunction(Date.toLocaleString) ? new Date(posted).toLocaleString() : new Date(posted).toString() %></time>.
-            <% } %>
-            <% if (this.model.get('posted')) { %>
+            <span class="job-posted">Publicado: <time datetime="<%= new Date(posted).toISOString() %>" published><%= this.model.dateToString(posted) %></time>.</span>
             <% if (posted !== this.model.get('updated')) { %>
-            Actualizado: <time datetime="<%= new Date(updated).toISOString() %>" updated><%= _.isFunction(Date.toLocaleString) ? new Date(updated).toLocaleString() : new Date(updated).toString() %></time>.
+            <span class="job-updated">Actualizado: <time datetime="<%= new Date(updated).toISOString() %>" updated><%= this.model.dateToString(updated) %></time>.</span>
             <% } %>
             <% } %>
             <% if (this.model.get('expires')) { %>
-            Expira: <time datetime="<%= new Date(expires).toISOString() %>"><%= _.isFunction(new Date().toLocaleDateString) ? new Date(expires).toLocaleDateString() : new Date(expires).toDateString() %></time>.
+            <span class="job-expires"><% if (this.model.expired()) {%>Expiró:<% } else {%>Expira:<% }%> <time datetime="<%= new Date(expires).toISOString() %>"><%= this.model.dateToDateString(expires) %></time>.</span>
             <% } %>
           </p>
         </footer>

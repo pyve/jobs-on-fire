@@ -78,5 +78,16 @@ body {
       padding-left: $border-radius-base * 2;
       padding-bottom: $border-radius-base;
     }
+    &.job-expired {
+      padding: $padding-base-vertical $padding-base-horizontal;
+      border-radius: $border-radius-base;
+      font-size: 90%;
+      box-shadow: 1px 1px 2px $gray-light inset;
+      background-color: $gray-lighter;
+      .job-expires {
+        color: $brand-danger;
+        font-weight: bold;
+      }
+    }
   }
 }

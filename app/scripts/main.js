@@ -57,16 +57,19 @@ $(function() {
       type: 'Date',
       yearStart: new Date().getFullYear(),
       yearEnd: new Date().getFullYear() + 1,
-      validators: ['required', function(value) {
-        if (new Date(value).valueOf() < Date.now()) {
-          return {
-            type: 'expires',
-            message: 'La fecha de expiración debe estar en el futuro'
-          };
-        } else {
-          return null;
+      validators: [
+        'required',
+        function(value) {
+          if (new Date(value).valueOf() < Date.now()) {
+            return {
+              type: 'expires',
+              message: 'La fecha de expiración debe estar en el futuro'
+            };
+          } else {
+            return null;
+          }
         }
-      }]
+      ]
     },
     location: {
       title: 'Ubicación',
@@ -157,16 +160,26 @@ $(function() {
     }
   };
 
-  var Job = Backbone.Model.extend({});
+  var Job = Backbone.Model.extend({
+    expired: function() {
+      var exp = this.get('expires');
+      if (exp && ((new Date(exp).valueOf() + 86400000) <= Date.now())) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    dateToString: function(date) {
+      return _.isFunction(Date.toLocaleString) ? new Date(date).toLocaleString() : new Date(date).toString();
+    },
+    dateToDateString: function(date) {
+      return _.isFunction(new Date().toLocaleDateString) ? new Date(date).toLocaleDateString() : new Date(date).toDateString();
+    }
+  });
 
   var Jobs = Backbone.Firebase.Collection.extend({
     model: Job,
-    firebase: firebase.child('jobs'),
-    active: function() {
-      return this.filter(function(job) {
-        return new Date(job.expires) > new Date();
-      });
-    }
+    firebase: firebase.child('jobs')
   });
 
   var JobView = Backbone.View.extend({
